@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import classes from "./Authentication.module.css";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../Store/AuthSlice";
 
 const Authentication = (props) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [login, setLogin] = useState(false);
   const [email, setEmail] = useState("");
@@ -59,8 +62,11 @@ const Authentication = (props) => {
         throw new Error("something went wrong");
       }
       const data = await response.json();
+
       navigate("/");
       console.log(data);
+      dispatch(loginUser([data.idToken, data.email]));
+
       {
         !login && alert("user has successfully registered");
       }
