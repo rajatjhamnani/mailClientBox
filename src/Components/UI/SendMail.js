@@ -6,6 +6,7 @@ import JoditEditor from "jodit-react";
 import { useRef } from "react";
 
 const SendEmail = () => {
+  const email = localStorage.getItem("email");
   const [to, setTo] = useState("");
   const [subject, setSubject] = useState("");
 
@@ -36,6 +37,9 @@ const SendEmail = () => {
         {
           method: "POST",
           body: JSON.stringify({
+            id: Math.random(),
+            time: new Date().toLocaleString(),
+            from: `${email}`,
             subject: sendEmail.subject,
             content: sendEmail.content,
           }),
