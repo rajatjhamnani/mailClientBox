@@ -1,0 +1,20 @@
+.box {
+  border: 1px solid black;
+  border-radius: 10px;
+  margin: 20px 25%;
+  height: 20cm;
+}
+.message {
+  height: 8cm;
+}
+.btn {
+  margin-right: 85%;
+  margin-top: 15px;
+}
+.input {
+  margin: 10px;
+}
+.lab {
+  margin-right: 90%;
+  font-size: larger;
+}

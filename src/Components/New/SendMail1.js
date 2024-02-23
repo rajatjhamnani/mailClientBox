@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
-import classes from "./SendMail.module.css";
+import classes from "./SendMail1.module.css";
 import JoditEditor from "jodit-react";
 
 import { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { receivedMail } from "../Store/MailSlice";
+import { useSearchParams } from "react-router-dom";
 
-const SendEmail = () => {
+const SendEmailOne = () => {
+  const data = useSelector((state) => state.mail);
+  console.log(data);
+  const dispatch = useDispatch();
   const email = localStorage.getItem("email");
   const [to, setTo] = useState("");
   const [subject, setSubject] = useState("");
@@ -29,35 +35,17 @@ const SendEmail = () => {
       subject: subject,
       content: content,
     };
-    const newEmail = sendEmail.sendTo.replace(/[^\w\s]/gi, "");
-    console.log(newEmail);
-    try {
-      const response = await fetch(
-        `https://mail-client-box-70bff-default-rtdb.firebaseio.com/${newEmail}.json`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            id: Math.random(),
-            time: new Date().toLocaleString(),
-            from: `${email}`,
-            subject: sendEmail.subject,
-            content: sendEmail.content,
-            blueTick: true,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("something went wrong");
-      }
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      throw new Error(error);
-    }
-
+    let id = Math.random().toString();
+    dispatch(
+      receivedMail({
+        to: sendEmail.sendTo,
+        subject: sendEmail.subject,
+        content: sendEmail.content,
+        id: id,
+        time: new Date().toLocaleString(),
+        blueTick: true,
+      })
+    );
     setTo("");
     setSubject("");
     setContent("");
@@ -116,4 +104,4 @@ const SendEmail = () => {
   );
 };
 
-export default SendEmail;
+export default SendEmailOne;

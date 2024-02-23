@@ -1,0 +1,45 @@
+.expand {
+  display: flex;
+}
+.first {
+  border: 1px solid black;
+  width: 15%;
+  height: 810px;
+  border-radius: 10px;
+  margin: 2px;
+}
+.first Button {
+  margin-top: 20px;
+}
+.second {
+  border: 1px solid black;
+  width: 85%;
+  height: fit-content;
+  border-radius: 10px;
+  margin: 2px;
+}
+.second h1 {
+  text-align: left;
+  margin-top: 10px;
+  margin-left: 15px;
+}
+.second img {
+  width: 40px;
+  height: 40px;
+  margin-top: 15px;
+  margin-right: 95%;
+}
+.second h3 {
+  margin-top: 50px;
+  text-align: left;
+  margin-left: 20px;
+}
+.second h5 {
+  margin-top: 50px;
+  text-align: left;
+  margin-left: 20px;
+}
+.second p {
+  text-align: right;
+  margin-right: 150px;
+}
