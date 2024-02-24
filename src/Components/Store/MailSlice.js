@@ -18,6 +18,10 @@ export const MailSlice = createSlice({
     replaceMail: (state, action) => {
       state.sentMail = action.payload;
     },
+    deleteEmail: (state, action) => {
+      const id = action.payload;
+      state.sentMail = state.sentMail.filter((item) => item.id !== id);
+    },
     changeBlueTickStatus: (state, action) => {
       const newItem = action.payload;
       console.log(newItem);
@@ -36,5 +40,6 @@ export const {
   changeBlueTickStatus,
   increaseCount,
   decreaseCount,
+  deleteEmail,
 } = MailSlice.actions;
 export default MailSlice.reducer;

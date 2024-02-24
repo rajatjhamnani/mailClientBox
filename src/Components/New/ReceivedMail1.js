@@ -7,6 +7,7 @@ import classes from "./ReceivedMail1.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
   changeBlueTickStatus,
+  deleteEmail,
   increaseCount,
   receivedMail,
 } from "../Store/MailSlice";
@@ -25,9 +26,10 @@ const ReceivedMailsOne = (props) => {
   const blueTickHandler = (id) => {
     dispatch(changeBlueTickStatus(id));
   };
-
-  const emailSearchHandler = (e) => {
-    console.log("Search Mail:", searchMail);
+  const deleteMailHandler = (event, id) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dispatch(deleteEmail(id));
   };
 
   const filteredEmails = allEmails.filter(
@@ -50,12 +52,6 @@ const ReceivedMailsOne = (props) => {
               value={searchMail}
               onChange={(e) => setSearchMail(e.target.value)}
             />
-            <Button
-              variant="outline-success"
-              onClick={() => emailSearchHandler()}
-            >
-              Search
-            </Button>
           </Form>
         </Container>
       </Navbar>
@@ -95,6 +91,13 @@ const ReceivedMailsOne = (props) => {
                     <Badge bg="primary" pill>
                       {item.time}
                     </Badge>
+                    <Button
+                      variant="primary"
+                      style={{ margin: "2px", zIndex: "1" }}
+                      onClick={(e) => deleteMailHandler(e, item.id)}
+                    >
+                      🗑️
+                    </Button>
                   </ListGroup.Item>
                 </Link>
               ))}
