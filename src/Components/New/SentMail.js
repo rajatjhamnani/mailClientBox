@@ -3,7 +3,7 @@ import { ListGroup, Badge } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { Navbar, Container, Form } from "react-bootstrap";
-import classes from "./ReceivedMail1.module.css";
+import classes from "./SentMail.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
   changeBlueTickStatus,
@@ -12,8 +12,9 @@ import {
   receivedMail,
 } from "../Store/MailSlice";
 
-const ReceivedMailsOne = (props) => {
+const SentMail = (props) => {
   const allEmails = useSelector((state) => state.mail.sentMail) || [];
+  //const allEmails = useSelector((state) => state.mail.sendData) || [];
   const dispatch = useDispatch();
   let count = useSelector((state) => state.mail.count);
   const [searchMail, setSearchMail] = useState("");
@@ -63,9 +64,9 @@ const ReceivedMailsOne = (props) => {
               {count}
             </Badge>
           </Link>
-          <Link to="/sentMail">
-            {" "}
-            <Button>Sent Mail</Button>
+          <br></br>
+          <Link to="/receivedMail">
+            <Button>Inbox</Button>
           </Link>
         </div>
         <div className={classes.right}>
@@ -73,6 +74,7 @@ const ReceivedMailsOne = (props) => {
             <h1>Empty inbox</h1>
           ) : (
             <ListGroup as="ol" numbered>
+              <h1>Sent Mails</h1>
               {filteredEmails.map((item, index) => (
                 <Link
                   to={`/receivedMail/${index}`}
@@ -113,4 +115,4 @@ const ReceivedMailsOne = (props) => {
   );
 };
 
-export default ReceivedMailsOne;
+export default SentMail;

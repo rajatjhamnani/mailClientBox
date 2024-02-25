@@ -38,6 +38,7 @@ const SendEmailOne = () => {
     let id = Math.random().toString();
     dispatch(
       receivedMail({
+        from: email,
         to: sendEmail.sendTo,
         subject: sendEmail.subject,
         content: sendEmail.content,

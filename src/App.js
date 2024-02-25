@@ -11,54 +11,25 @@ import SendEmailOne from "./Components/New/SendMail1";
 import ReceivedMailsOne from "./Components/New/ReceivedMail1";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { replaceMail } from "./Components/Store/MailSlice";
-
+import { replaceMail, sentEmails } from "./Components/Store/MailSlice";
+import { fetchMailData, mailData } from "./Components/Store/MailThunk";
+import SentMail from "./Components/New/SentMail";
+let firstRender = true;
 function App() {
   const Email = localStorage.getItem("email");
   const newEmail = Email.replace(/[^\w\s]/gi, "");
   const data = useSelector((state) => state.mail.sentMail);
+  const to = useSelector((state) => state.mail.to);
+  const sendTo = to.replace(/[^\w\s]/gi, "");
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const response = await fetch(
-          `https://mail-client-box-70bff-default-rtdb.firebaseio.com/${newEmail}.json`
-        );
-        if (!response.ok) {
-          throw new Error("something went wrong");
-        }
-        const getData = await response.json();
-        dispatch(replaceMail(getData));
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-    getData();
+    dispatch(fetchMailData(newEmail));
   }, []);
   useEffect(() => {
-    const fetchedData = async () => {
-      try {
-        const response = await fetch(
-          `https://mail-client-box-70bff-default-rtdb.firebaseio.com/${newEmail}.json`,
-          {
-            method: "PUT",
-            body: JSON.stringify(data),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error("something went wrong");
-        }
-        const sentData = await response.json();
-        console.log(sentData);
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-    fetchedData();
+    if (data && Object.keys(data).length > 0) {
+      dispatch(mailData(data, sendTo));
+    }
   }, [newEmail, data]);
   return (
     <div className="App">
@@ -69,6 +40,7 @@ function App() {
         <Route path="/sendMail" exact Component={SendEmailOne} />
         <Route path="/receivedMail" exact Component={ReceivedMailsOne} />
         <Route path="/receivedMail/:mailId" exact Component={ShowMail} />
+        <Route path="/sentMail" exact Component={SentMail} />
       </Routes>
     </div>
   );

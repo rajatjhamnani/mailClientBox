@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const emailState = {
   sentMail: [],
   count: 0,
+  to: "",
 };
 
 export const MailSlice = createSlice({
@@ -14,6 +15,7 @@ export const MailSlice = createSlice({
         state.sentMail = [];
       }
       state.sentMail.push(action.payload);
+      state.to = action.payload.to;
     },
     replaceMail: (state, action) => {
       state.sentMail = action.payload;
@@ -41,5 +43,6 @@ export const {
   increaseCount,
   decreaseCount,
   deleteEmail,
+  sentEmails,
 } = MailSlice.actions;
 export default MailSlice.reducer;
