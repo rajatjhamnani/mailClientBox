@@ -9,12 +9,11 @@ import {
   changeBlueTickStatus,
   deleteEmail,
   increaseCount,
-  receivedMail,
 } from "../Store/MailSlice";
 
 const SentMail = (props) => {
   const allEmails = useSelector((state) => state.mail.sentMail) || [];
-  //const allEmails = useSelector((state) => state.mail.sendData) || [];
+
   const dispatch = useDispatch();
   let count = useSelector((state) => state.mail.count);
   const [searchMail, setSearchMail] = useState("");

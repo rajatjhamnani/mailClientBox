@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { replaceMail, sentEmails } from "./Components/Store/MailSlice";
 import { fetchMailData, mailData } from "./Components/Store/MailThunk";
 import SentMail from "./Components/New/SentMail";
-let firstRender = true;
+
 function App() {
   const Email = localStorage.getItem("email");
   const newEmail = Email.replace(/[^\w\s]/gi, "");
@@ -26,9 +26,10 @@ function App() {
   useEffect(() => {
     dispatch(fetchMailData(newEmail));
   }, []);
+
   useEffect(() => {
     if (data && Object.keys(data).length > 0) {
-      dispatch(mailData(data, sendTo));
+      dispatch(mailData(data));
     }
   }, [newEmail, data]);
   return (
