@@ -10,7 +10,7 @@ export const fetchMailData = (newEmail) => {
         throw new Error("something went wrong");
       }
       const data = await response.json();
-      // ;
+
       return data;
     };
     try {
