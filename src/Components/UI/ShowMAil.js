@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Container, Navbar } from "react-bootstrap";
+import { Button, Container, Navbar, Badge } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
 import classes from "./ShowMail.module.css";
@@ -11,6 +11,8 @@ const ShowMail = (props) => {
   const [fetchedData, setFetchedData] = useState([]);
   const params = useParams();
   console.log(params.mailId);
+  const count = useSelector((state) => state.mail.count);
+  const newCount = useSelector((state) => state.mail.newCount);
   // const mail = localStorage.getItem("email");
   // const newEmail = mail.replace(/[^\w\s]/gi, "");
 
@@ -57,7 +59,19 @@ const ShowMail = (props) => {
       <div className={classes.expand}>
         <div className={classes.first}>
           <NavLink to="/receivedMail">
-            <Button>Inbox</Button>
+            <NavLink to="/sendMail">
+              <Button>Compose Mail</Button>
+            </NavLink>
+            <Button>
+              Inbox<Badge>{newCount}</Badge>
+            </Button>
+          </NavLink>
+          <br></br>
+          <NavLink to="/sentMail">
+            {" "}
+            <Button>
+              Sent Mail<Badge>{count}</Badge>
+            </Button>
           </NavLink>
         </div>
 

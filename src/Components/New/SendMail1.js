@@ -5,7 +5,7 @@ import JoditEditor from "jodit-react";
 
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { receivedMail } from "../Store/MailSlice";
+import { inboxData, receivedMail } from "../Store/MailSlice";
 import { useSearchParams } from "react-router-dom";
 
 const SendEmailOne = () => {
@@ -47,6 +47,36 @@ const SendEmailOne = () => {
         blueTick: true,
       })
     );
+    const receiver = sendEmail.sendTo;
+    const receiverMail = receiver.replace(/[^\w\s]/gi, "");
+    try {
+      const response = await fetch(
+        `https://mail-client-box-70bff-default-rtdb.firebaseio.com/${receiverMail}.json`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            from: email,
+            to: sendEmail.sendTo,
+            subject: sendEmail.subject,
+            content: sendEmail.content,
+            id: id,
+            time: new Date().toLocaleString(),
+            blueTick: true,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("something went wrong");
+      }
+      const data = await response.json();
+
+      console.log(data);
+    } catch (error) {
+      throw new Error(error);
+    }
     setTo("");
     setSubject("");
     setContent("");
@@ -91,6 +121,7 @@ const SendEmailOne = () => {
           <JoditEditor
             ref={editor}
             value={content}
+            tabIndex={1}
             onChange={(newContent) => {
               setContent(newContent);
             }}

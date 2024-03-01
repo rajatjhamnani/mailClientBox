@@ -58,7 +58,9 @@ const SentMail = (props) => {
       <div className={classes.drop}>
         <div className={classes.left}>
           <Link to="/sendMail">
-            <Button>Compose Mail {count}</Button>
+            <Button>Compose Mail </Button>
+            <br />
+            <Button>Sent Mail </Button>
             <Badge pill bg="primary" style={{ marginLeft: "5px" }}>
               {count}
             </Badge>
@@ -70,13 +72,13 @@ const SentMail = (props) => {
         </div>
         <div className={classes.right}>
           {filteredEmails.length === 0 ? (
-            <h1>Empty inbox</h1>
+            <h1>No Mail Sent</h1>
           ) : (
             <ListGroup as="ol" numbered>
               <h1>Sent Mails</h1>
               {filteredEmails.map((item, index) => (
                 <Link
-                  to={`/receivedMail/${index}`}
+                  to={`/sentMail/${index}`}
                   key={index}
                   onClick={() => blueTickHandler(item.id)}
                 >

@@ -4,6 +4,7 @@ const emailState = {
   sentMail: [],
   count: 0,
   to: "",
+  newCount: 0,
 };
 
 export const MailSlice = createSlice({
@@ -17,6 +18,7 @@ export const MailSlice = createSlice({
       state.sentMail.push(action.payload);
       state.to = action.payload.to;
     },
+
     replaceMail: (state, action) => {
       state.sentMail = action.payload;
     },
@@ -33,10 +35,14 @@ export const MailSlice = createSlice({
     increaseCount: (state, action) => {
       state.count = action.payload;
     },
+    increaseNewCount: (state, action) => {
+      state.newCount = action.payload;
+    },
   },
 });
 
 export const {
+  inboxData,
   receivedMail,
   replaceMail,
   changeBlueTickStatus,
@@ -44,5 +50,6 @@ export const {
   decreaseCount,
   deleteEmail,
   sentEmails,
+  increaseNewCount,
 } = MailSlice.actions;
 export default MailSlice.reducer;

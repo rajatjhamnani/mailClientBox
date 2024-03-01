@@ -4,7 +4,7 @@ export const fetchMailData = (newEmail) => {
   return async (dispatch) => {
     const fetchData = async () => {
       const response = await fetch(
-        `https://mail-client-box-70bff-default-rtdb.firebaseio.com/${newEmail}.json`
+        `https://mail-client-box-70bff-default-rtdb.firebaseio.com/${newEmail}sent.json`
       );
       if (!response.ok) {
         throw new Error("something went wrong");
@@ -26,10 +26,11 @@ export const fetchMailData = (newEmail) => {
 export const mailData = (data, sendTo) => {
   return async (dispatch) => {
     const Email = localStorage.getItem("email");
-    const newEmail = Email.replace(/[^\w\s]/gi, "");
+    const newEmail = Email ? Email.replace(/[^\w\s]/gi, "") : "";
+    console.log(newEmail);
     const sendRequest = async () => {
       const response = await fetch(
-        `https://mail-client-box-70bff-default-rtdb.firebaseio.com/${newEmail}.json`,
+        `https://mail-client-box-70bff-default-rtdb.firebaseio.com/${newEmail}sent.json`,
         {
           method: "PUT",
           body: JSON.stringify(data),
@@ -49,6 +50,7 @@ export const mailData = (data, sendTo) => {
       const res = await sendRequest();
       console.log(res);
     } catch (error) {
+      console.error("Error sending mail data:", error.message);
       throw new Error("something went wrong");
     }
   };

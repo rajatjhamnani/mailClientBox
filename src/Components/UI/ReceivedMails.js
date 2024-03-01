@@ -4,16 +4,21 @@ import { Link, NavLink } from "react-router-dom";
 import { Navbar, Container, Form, Button } from "react-bootstrap";
 import classes from "./ReceivedMails.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { receivedMail } from "../Store/MailSlice";
+import { increaseNewCount, receivedMail } from "../Store/MailSlice";
 
-const ReceivedMails = (props) => {
-  const [originalData, setOriginalData] = useState();
-  console.log(originalData);
+const ReceivedMails = () => {
+  //const [originalData, setOriginalData] = useState();
   const [fetchedData, setFetchedData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  //const [searchTerm, setSearchTerm] = useState("");
   const mail = localStorage.getItem("email");
   const newEmail = mail.replace(/[^\w\s]/gi, "");
   const dispatch = useDispatch();
+  const count = useSelector((state) => state.mail.newCount);
+  console.log(count);
+  useEffect(() => {
+    const blueTickCount = fetchedData.filter((item) => item.blueTick).length;
+    dispatch(increaseNewCount(blueTickCount));
+  }, [fetchedData, dispatch]);
 
   useEffect(() => {
     const receiveMails = async () => {
@@ -31,114 +36,112 @@ const ReceivedMails = (props) => {
           throw new Error("Something went wrong");
         }
         const data = await response.json();
-        setOriginalData((prev) => {
-          return { ...prev, data };
-        });
 
-        console.log(data);
-        const dataArray = Object.entries(data).map(([id, entry]) => ({
-          id,
-          ...entry,
-        }));
-        console.log(dataArray);
-
-        setFetchedData(dataArray);
+        if (data && typeof data === "object") {
+          const dataArray = Object.entries(data).map(([idd, entry]) => ({
+            idd,
+            ...entry,
+          }));
+          setFetchedData(dataArray);
+        } else {
+          setFetchedData([]);
+        }
       } catch (error) {
         console.log(error.message);
       }
     };
+
     receiveMails();
-  }, [dispatch, newEmail]);
+  }, [fetchedData]);
 
-  const handleSearch = () => {
-    const filteredData = fetchedData.filter((item) => {
-      return (
-        item.from.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.subject.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    });
-    setFetchedData(filteredData);
-  };
-
-  const handleClearSearch = async () => {
-    setSearchTerm("");
+  const handleDelete = async (event, id) => {
+    event.preventDefault();
+    event.stopPropagation();
     try {
       const response = await fetch(
-        `https://mail-client-box-70bff-default-rtdb.firebaseio.com/${newEmail}.json`,
+        `https://mail-client-box-70bff-default-rtdb.firebaseio.com/${newEmail}/${id}.json`,
         {
-          method: "GET",
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete email (HTTP ${response.status})`);
+      }
+
+      const updatedData = fetchedData.filter((item) => item.id !== id);
+      setFetchedData(updatedData);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+  const blueTickHandler = async (id) => {
+    try {
+      const response = await fetch(
+        `https://mail-client-box-70bff-default-rtdb.firebaseio.com/${newEmail}/${id}.json`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            blueTick: false,
+          }),
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
       if (!response.ok) {
-        throw new Error("Something went wrong");
+        throw new Error(`Failed to update blue tick (HTTP ${response.status})`);
       }
-      const data = await response.json();
-
-      const dataArray = Object.entries(data).map(([id, entry]) => ({
-        id,
-        ...entry,
-      }));
-      setFetchedData(dataArray);
+      setFetchedData((prevData) =>
+        prevData.map((item) =>
+          item.idd === id ? { ...item, blueTick: false } : item
+        )
+      );
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   };
-  let count = 0;
 
   return (
     <>
-      <Navbar expand="lg" className="bg-body-tertiary">
-        <Container>
-          <Navbar.Brand>React mail</Navbar.Brand>
-          <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Button variant="outline-success" onClick={handleSearch}>
-              Search
-            </Button>
-            <Button
-              variant="outline-secondary"
-              onClick={handleClearSearch}
-              className="ms-2"
-            >
-              Clear Search
-            </Button>
-          </Form>
-        </Container>
-      </Navbar>
       <div className={classes.drop}>
         <div className={classes.left}>
           <Link to="/sendMail">
             {" "}
             <Button>Compose Mail</Button>
           </Link>
+          <br />
+          <Button>Inbox</Button>
+          <Badge pill bg="primary" style={{ marginLeft: "5px" }}>
+            {count}
+          </Badge>
+          <br />
+          <Link to="/sentMail">
+            {" "}
+            <Button>Sent Mail</Button>
+          </Link>
         </div>
         <div className={classes.right}>
           <ListGroup as="ol" numbered>
-            {fetchedData.map((item, index) => {
-              if (item.blueTick === true) {
-                count++;
-                console.log(count);
-              }
-              return (
-                <NavLink to={`/receivedMail/${index}`} key={item.id}>
+            <h1>Inbox</h1>
+            {fetchedData.map((item, index) => (
+              <div key={item.id}>
+                <NavLink
+                  to={`/receivedMail/${index}`}
+                  onClick={() => blueTickHandler(item.idd)}
+                >
                   <ListGroup.Item
                     as="li"
                     className="d-flex justify-content-between align-items-start"
                   >
-                    <Badge pill bg="primary">
-                      .
-                    </Badge>
+                    {item.blueTick === true && (
+                      <Badge pill bg="primary">
+                        .
+                      </Badge>
+                    )}
                     <div className="ms-2 me-auto">
                       <div className="fw-bold">{item.from}</div>
                       {item.content}
@@ -146,10 +149,17 @@ const ReceivedMails = (props) => {
                     <Badge bg="primary" pill>
                       {item.time}
                     </Badge>
+                    <Button
+                      variant="primary"
+                      style={{ margin: "2px", zIndex: "1" }}
+                      onClick={(e) => handleDelete(e, item.idd)}
+                    >
+                      🗑️
+                    </Button>
                   </ListGroup.Item>
                 </NavLink>
-              );
-            })}
+              </div>
+            ))}
           </ListGroup>
         </div>
       </div>

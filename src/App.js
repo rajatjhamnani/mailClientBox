@@ -14,18 +14,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { replaceMail, sentEmails } from "./Components/Store/MailSlice";
 import { fetchMailData, mailData } from "./Components/Store/MailThunk";
 import SentMail from "./Components/New/SentMail";
+import ShowInboxMail from "./Components/UI/ShowInboxMail";
 
 function App() {
   const Email = localStorage.getItem("email");
-  const newEmail = Email.replace(/[^\w\s]/gi, "");
+  const newEmail = Email ? Email.replace(/[^\w\s]/gi, "") : "";
+
   const data = useSelector((state) => state.mail.sentMail);
   const to = useSelector((state) => state.mail.to);
   const sendTo = to.replace(/[^\w\s]/gi, "");
   const dispatch = useDispatch();
+  const isLogin = useSelector((state) => state.auth.isLogin);
 
   useEffect(() => {
     dispatch(fetchMailData(newEmail));
-  }, []);
+  }, [newEmail, isLogin]);
 
   useEffect(() => {
     if (data && Object.keys(data).length > 0) {
@@ -36,12 +39,13 @@ function App() {
     <div className="App">
       <MyNavbar />
       <Routes>
-        <Route path="/" exact Component={Home} />
-        <Route path="/auth" exact Component={Authentication} />
-        <Route path="/sendMail" exact Component={SendEmailOne} />
-        <Route path="/receivedMail" exact Component={ReceivedMailsOne} />
-        <Route path="/receivedMail/:mailId" exact Component={ShowMail} />
-        <Route path="/sentMail" exact Component={SentMail} />
+        <Route path="/" element={<Home />} />
+        <Route path="/auth" element={<Authentication />} />
+        <Route path="/sendMail" element={<SendEmailOne />} />
+        <Route path="/receivedMail" element={<ReceivedMails />} />
+        <Route path="/receivedMail/:mailId" element={<ShowInboxMail />} />
+        <Route path="/sentMail/:mailId" element={<ShowMail />} />
+        <Route path="/sentMail" element={<SentMail />} />
       </Routes>
     </div>
   );
