@@ -40,12 +40,14 @@ function App() {
       <MyNavbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/auth" element={<Authentication />} />
-        <Route path="/sendMail" element={<SendEmailOne />} />
-        <Route path="/receivedMail" element={<ReceivedMails />} />
-        <Route path="/receivedMail/:mailId" element={<ShowInboxMail />} />
-        <Route path="/sentMail/:mailId" element={<ShowMail />} />
-        <Route path="/sentMail" element={<SentMail />} />
+        {!isLogin && <Route path="/auth" element={<Authentication />} />}
+        {isLogin && <Route path="/sendMail" element={<SendEmailOne />} />}
+        {isLogin && <Route path="/receivedMail" element={<ReceivedMails />} />}
+        {isLogin && (
+          <Route path="/receivedMail/:mailId" element={<ShowInboxMail />} />
+        )}
+        {isLogin && <Route path="/sentMail/:mailId" element={<ShowMail />} />}
+        {isLogin && <Route path="/sentMail" element={<SentMail />} />}
       </Routes>
     </div>
   );

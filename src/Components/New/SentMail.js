@@ -59,7 +59,10 @@ const SentMail = (props) => {
         <div className={classes.left}>
           <Link to="/sendMail">
             <Button>Compose Mail </Button>
-            <br />
+          </Link>
+          <br></br>
+          <Link to="/sentMail">
+            {" "}
             <Button>Sent Mail </Button>
             <Badge pill bg="primary" style={{ marginLeft: "5px" }}>
               {count}

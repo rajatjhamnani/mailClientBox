@@ -3,6 +3,7 @@ import { ListGroup, Badge } from "react-bootstrap";
 import { Link, NavLink } from "react-router-dom";
 import { Navbar, Container, Form, Button } from "react-bootstrap";
 import classes from "./ReceivedMails.module.css";
+import empty from "../../Images/empty.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { increaseNewCount, receivedMail } from "../Store/MailSlice";
 
@@ -127,6 +128,13 @@ const ReceivedMails = () => {
         <div className={classes.right}>
           <ListGroup as="ol" numbered>
             <h1>Inbox</h1>
+            {fetchedData.length === 0 && (
+              <img
+                style={{ height: "100vh", width: "100pxs" }}
+                src={empty}
+                alt="image"
+              />
+            )}
             {fetchedData.map((item, index) => (
               <div key={item.id}>
                 <NavLink

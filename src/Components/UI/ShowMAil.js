@@ -62,6 +62,7 @@ const ShowMail = (props) => {
             <NavLink to="/sendMail">
               <Button>Compose Mail</Button>
             </NavLink>
+            <br></br>
             <Button>
               Inbox<Badge>{newCount}</Badge>
             </Button>

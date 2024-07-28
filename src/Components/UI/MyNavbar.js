@@ -19,7 +19,7 @@ const MyNavbar = (props) => {
         <Container>
           {!isLogin && (
             <Navbar.Brand as={NavLink} to="/">
-              Navbar
+              React Mail
             </Navbar.Brand>
           )}
           <Nav className="me-auto">
